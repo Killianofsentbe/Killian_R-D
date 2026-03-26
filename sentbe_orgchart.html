@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SentBe 전사 조직도 | 2026.03</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #1e293b;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    backdrop-filter: blur(10px);
+  }
+  header .logo-area { display: flex; align-items: center; gap: 14px; }
+  header .logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: white;
+  }
+  header h1 { font-size: 18px; font-weight: 700; color: white; letter-spacing: -0.3px; }
+  header .subtitle { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+  header .stats { display: flex; gap: 20px; align-items: center; }
+  header .stat-item { text-align: center; }
+  header .stat-num { font-size: 22px; font-weight: 800; color: white; line-height: 1; }
+  header .stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  header .stat-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.12); }
+  header .date-badge {
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: #93c5fd;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  header .toggle-btns { display: flex; gap: 8px; margin-left: 12px; }
+  header .toggle-btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+  header .toggle-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.28); }
+
+  /* ─── GROUP LEGEND ─── */
+  .legend {
+    background: #1e293b;
+    padding: 10px 40px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .legend-label { font-size: 11px; color: #64748b; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .legend-text { font-size: 12px; color: #94a3b8; }
+  .legend-count { font-size: 11px; color: #64748b; }
+
+  /* ─── CHART WRAPPER ─── */
+  .chart-wrapper {
+    padding: 40px 60px 80px;
+    overflow-x: auto;
+    overflow-y: visible;
+    min-height: calc(100vh - 100px);
+  }
+  .chart-inner {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100%;
+  }
+
+  /* ─── TREE NODES ─── */
+  .tree-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tree-children {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 32px;
+  }
+  /* Horizontal connecting bar */
+  .tree-children::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.12);
+  }
+  /* Vertical line from parent node downward */
+  .has-children > .node-card-wrap::after {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 32px;
+    background: rgba(255,255,255,0.12);
+    margin: 0 auto;
+  }
+  /* Vertical line up to each child node */
+  .tree-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+  }
+  .tree-item > .connector-up {
+    width: 2px;
+    height: 0;
+    background: rgba(255,255,255,0.12);
+  }
+
+  /* ─── NODE CARD ─── */
+  .node-card-wrap { position: relative; }
+  .node-card {
+    background: #1e293b;
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 13px 18px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    position: relative;
+    min-width: 130px;
+    max-width: 200px;
+    text-align: center;
+    user-select: none;
+  }
+  .node-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .node-card.collapsed { opacity: 0.85; }
+
+  /* Color accent bar at top of card */
+  .node-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: var(--accent, #3b82f6);
+  }
+
+  .card-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+  .card-person {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 5px;
+    line-height: 1.3;
+  }
+  .card-role {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 1px;
+  }
+  .card-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+  .card-count span { color: white; }
+  .new-badge {
+    position: absolute;
+    top: -7px; right: -7px;
+    background: #ef4444;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .con-badge {
+    display: inline-block;
+    background: rgba(251,191,36,0.15);
+    border: 1px solid rgba(251,191,36,0.3);
+    color: #fbbf24;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .ssg-badge {
+    display: inline-block;
+    background: rgba(52,211,153,0.15);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: #34d399;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .expand-icon {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px; height: 18px;
+    background: #334155;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: #94a3b8;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    z-index: 10;
+  }
+  .node-card:hover .expand-icon { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+  /* ─── ROOT / TOP-LEVEL CARDS ─── */
+  .node-card.root {
+    background: linear-gradient(135deg, #1e3a5f, #0f2444);
+    border-color: rgba(59,130,246,0.3);
+    min-width: 180px;
+    padding: 16px 22px;
+  }
+  .node-card.root .card-name { font-size: 16px; color: white; }
+  .node-card.root .card-person { font-size: 13px; color: #93c5fd; }
+  .node-card.root .card-role { font-size: 11px; color: #60a5fa; }
+  .node-card.root .card-count { background: rgba(59,130,246,0.15); color: #93c5fd; }
+  .node-card.root .card-count span { color: white; }
+
+  .node-card.group-card {
+    min-width: 160px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    border-color: var(--border);
+  }
+  .node-card.group-card .card-name { font-size: 14px; }
+
+  /* ─── COLLAPSED CHILDREN HIDDEN ─── */
+  .tree-children.hidden { display: none; }
+  .has-children.collapsed > .node-card-wrap::after { display: none; }
+
+  /* ─── PEOPLE LIST (leaf nodes) ─── */
+  .people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    max-width: 180px;
+    margin-top: 8px;
+  }
+  .person-chip {
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: #94a3b8;
+    white-space: nowrap;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+  /* ─── TOOLTIP ─── */
+  .tooltip {
+    position: fixed;
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #e2e8f0;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    max-width: 220px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .tooltip.visible { display: block; }
+  .tooltip-name { font-weight: 700; font-size: 13px; color: white; }
+  .tooltip-members { margin-top: 6px; }
+  .tooltip-member { color: #94a3b8; font-size: 11px; line-height: 1.6; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tree-children:not(.hidden) { animation: fadeIn 0.2s ease; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo">S</div>
+    <div>
+      <h1>SentBe 전사 조직도</h1>
+      <div class="subtitle">Business Administration · HR Team</div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-num">135</div>
+      <div class="stat-label">총 임직원</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:#60a5fa">107</div>
+      <div class="stat-label">SentBe KR</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:#34d399">4</div>
+      <div class="stat-label">APAC</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:#a78bfa">24</div>
+      <div class="stat-label">America</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="date-badge">2026.03.01 기준</div>
+    <div class="toggle-btns">
+      <button class="toggle-btn" id="btnExpandAll" onclick="expandAll()">전체 펼치기</button>
+      <button class="toggle-btn" id="btnCollapseAll" onclick="collapseAll()">전체 접기</button>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <span class="legend-label">그룹</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div><span class="legend-text">SentBe KR</span><span class="legend-count">(107명)</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div><span class="legend-text">SentBe APAC</span><span class="legend-count">(4명)</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div><span class="legend-text">SentBe America</span><span class="legend-count">(24명)</span></div>
+  <div style="margin-left:16px; width:1px; height:16px; background:rgba(255,255,255,0.1)"></div>
+  <span class="legend-label">태그</span>
+  <div class="legend-item"><span class="con-badge">겸</span><span class="legend-text" style="margin-left:4px">겸직</span></div>
+  <div class="legend-item"><span class="ssg-badge">SSG</span><span class="legend-text" style="margin-left:4px">싱가폴 법인 급여</span></div>
+  <div class="legend-item"><span style="background:#ef4444;color:white;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;">NEW</span><span class="legend-text" style="margin-left:6px">신설 조직</span></div>
+</div>
+
+<div class="chart-wrapper">
+  <div class="chart-inner" id="chart"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ───────────────────────────────────────────────────────
+//  ORG DATA
+// ───────────────────────────────────────────────────────
+const org = {
+  name: 'SentBe',
+  person: '최성욱 (Alex)',
+  role: 'CEO',
+  count: 135,
+  accent: '#3b82f6',
+  isRoot: true,
+  expanded: true,
+  children: [
+    // ══════════════════════════════════════════
+    //  SENTBE KR
+    // ══════════════════════════════════════════
+    {
+      name: 'SentBe KR',
+      person: '최성욱 (Alex)',
+      role: 'CEO',
+      count: 107,
+      accent: '#3b82f6',
+      isGroup: true,
+      groupBg: ['#1a2e4a','#111e33'],
+      groupBorder: 'rgba(59,130,246,0.3)',
+      expanded: true,
+      children: [
+        // CEO Direct
+        {
+          name: 'CEO Direct',
+          count: 15,
+          accent: '#0ea5e9',
+          expanded: false,
+          children: [
+            {
+              name: 'SentBe Product',
+              person: '김혜진 (Hailey)',
+              role: 'Head',
+              count: 6,
+              accent: '#0ea5e9',
+              expanded: false,
+              children: [
+                { name: 'SentBe Product Manager', count: 3, accent: '#0ea5e9',
+                  members: ['김현지 (Stella)', '손지호 (Amy.Son)', '송영덕 (Anton)'] },
+                { name: 'SentBe Product Design', count: 1, accent: '#0ea5e9',
+                  members: ['조채연 (Rachel)'] },
+                { name: 'Product Writing', count: 1, accent: '#0ea5e9',
+                  members: ['박희영 (Heidi)'] },
+              ]
+            },
+            {
+              name: 'SentBiz Product',
+              person: '김태훈 (Joseph)',
+              role: 'Head',
+              count: 6,
+              accent: '#0ea5e9',
+              note: 'ssg',
+              expanded: false,
+              children: [
+                { name: 'SentBiz Product Manager', count: 5, accent: '#0ea5e9',
+                  members: ['장진서 (Kaylee)', '송미경 (MK)', '오경지 (Kay)', 'Fauzan', '조은길 (Gilbert)'] },
+              ]
+            },
+            { name: 'Creative Design', person: '정아성 (Hiro)', role: 'Lead', count: 2, accent: '#0ea5e9',
+              members: ['정아성 (Hiro)', '최형준 (Choiko)'] },
+            { name: 'PR', person: '정민정 (Amanda)', role: 'Lead', count: 1, accent: '#0ea5e9',
+              members: ['정민정 (Amanda)'] },
+          ]
+        },
+        // Tech
+        {
+          name: 'Tech',
+          count: 31,
+          accent: '#f97316',
+          expanded: false,
+          children: [
+            {
+              name: 'Infra',
+              person: '이승규 (Neo)',
+              role: 'Head / CISO',
+              count: 3,
+              accent: '#f97316',
+              expanded: false,
+              children: [
+                { name: 'SysOps', count: 1, accent: '#f97316', members: ['차한울 (Chris)'] },
+                { name: 'DevOps', count: 1, accent: '#f97316', members: ['홍정우 (Are)'] },
+              ]
+            },
+            {
+              name: 'Information Security',
+              person: '이승규 (Neo)',
+              role: 'Head (겸)',
+              count: 3,
+              accent: '#f97316',
+              note: 'con',
+              expanded: false,
+              children: [
+                { name: 'Information Security', count: 3, accent: '#f97316',
+                  members: ['유광재 (Noah)', '송승훈 (Hoony)', '정지원 (Adrian)'] },
+              ]
+            },
+            {
+              name: 'SentBe Tech',
+              person: '손일 (Alf)',
+              role: 'Head',
+              count: 16,
+              accent: '#f97316',
+              expanded: false,
+              children: [
+                { name: 'SentBe Backend', count: 4, accent: '#f97316',
+                  members: ['황일용 (Paul)', '정윤정 (May)', '강준규 (Kane)', '김용찬 (Teo)'] },
+                { name: 'SentBe Frontend', count: 1, accent: '#f97316',
+                  members: ['이진혁 (Kevin)'] },
+                { name: 'Android App', count: 3, accent: '#f97316',
+                  members: ['서재훈 (Jerry)', '임수진 (Sio)', '황진호 (Jino)'] },
+                { name: 'iOS App', count: 4, accent: '#f97316',
+                  members: ['김동현 (Dmitri)', '김은우 (Eden)', '박지찬 (Chan)', '정세헌 (Owen)'] },
+                { name: 'SentBe QA', count: 3, accent: '#f97316',
+                  members: ['엄준영 (Lucky)', '권세호 (Morgan)', '오윤교 (Andrew)'] },
+              ]
+            },
+            {
+              name: 'SentBiz Tech',
+              person: '이창열 (Kai)',
+              role: 'Head',
+              count: 9,
+              accent: '#f97316',
+              expanded: false,
+              children: [
+                { name: 'SentBiz Backend', count: 5, accent: '#f97316',
+                  members: ['윤재현 (Eddy)', '김다인 (Dory)', '홍광표 (Enzo)', '심문섭 (LinQ)', '정지희 (Jireh)'] },
+                { name: 'SentBiz QA', count: 3, accent: '#f97316',
+                  members: ['이혁수 (HS)', '신윤섭 (Jackson)', '정인철 (Calvin)'] },
+              ]
+            },
+          ]
+        },
+        // Operation Platform
+        {
+          name: 'Operation Platform',
+          count: 7,
+          accent: '#14b8a6',
+          expanded: false,
+          children: [
+            {
+              name: 'Operation Planning',
+              person: '조승리 (Ricky)',
+              role: 'Head',
+              count: 4,
+              accent: '#14b8a6',
+              expanded: false,
+              children: [
+                { name: 'Operation Strategy', count: 3, accent: '#14b8a6',
+                  members: ['구현모 (Haley)', '이진형 (Jin)', '김재현 (Shawn)'] },
+              ]
+            },
+            {
+              name: 'Internal Product',
+              person: '조승리 (Ricky)',
+              role: 'Head (겸)',
+              count: 3,
+              accent: '#14b8a6',
+              note: 'con',
+              expanded: false,
+              children: [
+                { name: 'Internal Product Management', count: 2, accent: '#14b8a6',
+                  members: ['조창현 (John.Cho)', '김한솔 (Ssol)'] },
+                { name: 'Internal Product Tech', count: 1, accent: '#14b8a6', isNew: true,
+                  members: ['권혜민 (Posie)'] },
+              ]
+            },
+          ]
+        },
+        // Business Administration
+        {
+          name: 'Business Administration',
+          person: '김현준 (Justin)',
+          role: 'CFO',
+          count: 18,
+          accent: '#6366f1',
+          expanded: false,
+          children: [
+            {
+              name: 'Finance',
+              person: '강경현 (Mateo)',
+              role: 'Head',
+              count: 7,
+              accent: '#6366f1',
+              expanded: false,
+              children: [
+                { name: 'Treasury', count: 3, accent: '#6366f1',
+                  members: ['김소라 (Elena)', '강은숙 (Sook)', '나지현 (Jina)'] },
+                { name: 'Accounting', count: 3, accent: '#6366f1',
+                  members: ['홍승희 (Bom)', '최아람 (Purynn)', '황효진 (Marie)'] },
+              ]
+            },
+            {
+              name: 'FX',
+              person: '김현준 (Justin)',
+              role: 'Head (겸)',
+              count: 3,
+              accent: '#6366f1',
+              note: 'con',
+              isNew: true,
+              expanded: false,
+              children: [
+                { name: 'KR FX', count: 2, accent: '#6366f1',
+                  members: ['김에스더 (Sthe)', '이가은 (Gwen)'] },
+                { name: 'Global FX', count: 1, accent: '#6366f1',
+                  members: ['Yang Zhong Hui (Benson)'] },
+              ]
+            },
+            {
+              name: 'HR',
+              person: '김현준 (Justin)',
+              role: 'Lead (겸)',
+              count: 7,
+              accent: '#6366f1',
+              note: 'con',
+              highlight: true,
+              members: ['권오승 (Killian)', '백수린 (Leah)', '임지원 (Emily)', '안인수 (Ian)', '성민혁 (Christopher)*', '김종찬 (Jongchan)*', '김진형 (Jinhyeong)*'],
+            },
+          ]
+        },
+        // L&C
+        {
+          name: 'L&C',
+          person: '이희정 (Esther)',
+          role: 'CLCO',
+          count: 14,
+          accent: '#ec4899',
+          expanded: false,
+          children: [
+            {
+              name: 'Global L&C',
+              person: 'Cecille',
+              role: 'Head',
+              count: 2,
+              accent: '#ec4899',
+              expanded: false,
+              children: [
+                { name: 'SSG L&C', count: 1, accent: '#ec4899', note:'ssg',
+                  members: ['Minger Ong'] },
+              ]
+            },
+            { name: 'KR L&C', person: '이희정 (Esther)', role: 'Lead (겸)', note:'con', count: 4, accent: '#ec4899',
+              members: ['백진이 (Joy)', '이강욱 (Luke)', '김민정 (Janice)', '+ Esther(겸)'] },
+            { name: 'AML', person: '이세영 (Alison)', role: 'Lead', count: 3, accent: '#ec4899',
+              members: ['오준호 (Junho)', '황민지 (Daisy)', '+ Alison'] },
+            { name: 'Compliance Ops', person: '정민지 (MJ)', role: 'Lead', count: 4, accent: '#ec4899',
+              members: ['주슬기 (Joo)', '임정은 (June)', '김보은 (Bailey)', '+ MJ'] },
+          ]
+        },
+        // C2C Business
+        {
+          name: 'C2C Business',
+          person: '류은경 (Lisa)',
+          role: 'Div. Head',
+          count: 40,
+          accent: '#f59e0b',
+          expanded: false,
+          children: [
+            { name: 'C2C Growth Marketing', person: '류은경 (Lisa)', role: 'Lead (겸)', note:'con', count: 2, accent: '#f59e0b',
+              members: ['오승은 (Letty)', '우진형 (Radi)'] },
+            {
+              name: 'Corridor Development',
+              person: 'Eneng',
+              role: 'Lead',
+              count: 8,
+              accent: '#f59e0b',
+              members: ['Zahra', 'Bek', 'Daniel.Long', 'Cynthia', 'Yubin', 'Peter', 'Raizza', '+ Eneng']
+            },
+            {
+              name: 'Customer Experiences',
+              person: '라인채 (Ed.Ra)',
+              role: 'Lead',
+              count: 29,
+              accent: '#f59e0b',
+              expanded: false,
+              children: [
+                { name: 'CX Group 1', count: 7, accent: '#f59e0b',
+                  members: ['Jenny', 'Grace', 'Emer', 'Andy', 'Bona', 'Lana', 'Bella'] },
+                { name: 'CX Group 2', count: 9, accent: '#f59e0b',
+                  members: ['Fai', 'May', 'Lew', 'Thy', 'Mimi', 'Quy*', 'Laziza', 'Sunil', 'Sabin'] },
+                { name: 'CX Group 3', count: 6, accent: '#f59e0b',
+                  members: ['Elsa', 'Sybil*', 'Claresta', 'Gigi', 'Sunil', 'Sabin'] },
+                { name: 'CX Group 4', count: 6, accent: '#f59e0b',
+                  members: ['이태현 (Nicholas)', '고주희 (Alpha)', '함정모 (Dan.Ham)*', '황예지 (Benny)', '신영미 (Harper)', '유광식 (Bobby)'] },
+              ]
+            },
+          ]
+        },
+      ]
+    },
+
+    // ══════════════════════════════════════════
+    //  SENTBE APAC
+    // ══════════════════════════════════════════
+    {
+      name: 'SentBe APAC',
+      person: '유민석 (Dan)',
+      role: 'CSO / 그룹장',
+      count: 4,
+      accent: '#10b981',
+      isGroup: true,
+      groupBg: ['#0f2d22','#0a1f18'],
+      groupBorder: 'rgba(16,185,129,0.3)',
+      expanded: false,
+      children: [
+        {
+          name: 'Corporate Development',
+          count: 2,
+          accent: '#10b981',
+          expanded: false,
+          children: [
+            { name: 'Research & Analytics', count: 2, accent: '#10b981',
+              members: ['강찬영 (CY)*', '강민석 (Ryan.Kang)'] },
+            { name: 'New Biz', count: 0, accent: '#10b981', note:'con',
+              person: '유민석 (Dan)', role: 'Lead (겸)' },
+            { name: 'Growth Planning', count: 0, accent: '#10b981' },
+          ]
+        },
+        { name: 'Admin / Finance', person: '김도연 (Sahra)', role: 'Manager', count: 1, accent: '#10b981',
+          members: ['김도연 (Sahra)'] },
+        {
+          name: '법인',
+          accent: '#10b981',
+          expanded: false,
+          children: [
+            { name: 'SG 법인', person: 'Thomas', role: '법인장 (겸)', note:'con', accent: '#10b981' },
+            { name: 'VN 법인', person: '김동욱 (Valex)', role: '법인장 (겸)', note:'con', accent: '#10b981' },
+            { name: 'AU 법인', person: '유민석 (Dan)', role: '법인장 (겸)', note:'con', accent: '#10b981' },
+            { name: 'ID 법인', person: '유민석 (Dan)', role: '법인장 (겸)', note:'con', accent: '#10b981' },
+          ]
+        },
+      ]
+    },
+
+    // ══════════════════════════════════════════
+    //  SENTBE AMERICA
+    // ══════════════════════════════════════════
+    {
+      name: 'SentBe America',
+      person: '이재영 (Jay)',
+      role: '그룹장',
+      count: 24,
+      accent: '#8b5cf6',
+      isGroup: true,
+      groupBg: ['#1e1040','#130a2e'],
+      groupBorder: 'rgba(139,92,246,0.3)',
+      expanded: false,
+      children: [
+        {
+          name: 'Global Business Development',
+          person: '이재영 (Jay)',
+          role: 'Div. Head (겸)',
+          count: 17,
+          accent: '#8b5cf6',
+          note: 'con',
+          expanded: false,
+          children: [
+            {
+              name: 'Global Business Tech',
+              person: 'Kharisma',
+              role: 'Head',
+              count: 5,
+              accent: '#8b5cf6',
+              note: 'ssg',
+              expanded: false,
+              children: [
+                { name: 'SentBiz Frontend', count: 2, accent: '#8b5cf6', note:'ssg',
+                  members: ['Harris (IN)', 'Fadhila (IN)'] },
+                { name: 'SENDA Backend', count: 1, accent: '#8b5cf6', note:'ssg',
+                  members: ['Geo (IN)'] },
+              ]
+            },
+            { name: 'Network Partnership', person: 'Jescia', role: 'Head', count: 1, accent: '#8b5cf6',
+              members: ['Jescia'] },
+            {
+              name: 'BizOps',
+              person: 'Thomas',
+              role: 'Head',
+              count: 11,
+              accent: '#8b5cf6',
+              note: 'ssg',
+              expanded: false,
+              children: [
+                { name: 'Korea Acct. Mgmt & Ops', count: 3, accent: '#8b5cf6',
+                  members: ['윤찬일 (EL)', '염예진 (Giselle)', '김윤서 (Joyce)(겸)'] },
+                { name: 'Payout Ops', count: 3, accent: '#8b5cf6',
+                  members: ['이정은 (Olivia)', 'Syifa (IN)', 'Alif (IN)'] },
+                { name: 'Collections & Shared Services', count: 4, accent: '#8b5cf6',
+                  members: ['김미리 (Jessie)', 'Zavier (SSG)', '이승균 (Jack) (SSG)', 'Thomas (겸)'] },
+                { name: 'Global Account Management', count: 1, accent: '#8b5cf6',
+                  members: ['Thomas (겸)', '김동욱 (Valex)(겸)'] },
+              ]
+            },
+          ]
+        },
+        {
+          name: 'Enterprise Sales',
+          person: '조용인 (Yong)',
+          role: 'Div. Head',
+          count: 6,
+          accent: '#8b5cf6',
+          expanded: false,
+          children: [
+            { name: 'Enterprise Growth', count: 5, accent: '#8b5cf6',
+              members: ['김동욱 (Valex)', '김윤서 (Joyce)', '유일 (Glenn)', '김예지 (Bonnie)*', '송보훈 (Samuel)'] },
+          ]
+        },
+        {
+          name: '법인',
+          accent: '#8b5cf6',
+          expanded: false,
+          children: [
+            { name: 'US 법인', person: '이재영 (Jay)', role: '법인장 (겸)', note:'con', accent: '#8b5cf6' },
+            { name: 'CA 법인', person: '이재영 (Jay)', role: '법인장 (겸)', note:'con', accent: '#8b5cf6' },
+          ]
+        },
+      ]
+    },
+  ]
+};
+
+// ───────────────────────────────────────────────────────
+//  RENDER FUNCTIONS
+// ───────────────────────────────────────────────────────
+function createCard(node) {
+  const wrap = document.createElement('div');
+  wrap.className = 'node-card-wrap';
+
+  const card = document.createElement('div');
+  card.className = 'node-card';
+  if (node.isRoot)  card.classList.add('root');
+  if (node.isGroup) {
+    card.classList.add('group-card');
+    card.style.setProperty('--bg1', node.groupBg[0]);
+    card.style.setProperty('--bg2', node.groupBg[1]);
+    card.style.setProperty('--border', node.groupBorder);
+  }
+  if (node.highlight) {
+    card.style.border = '1.5px solid rgba(99,102,241,0.5)';
+    card.style.boxShadow = '0 0 20px rgba(99,102,241,0.15)';
+  }
+  card.style.setProperty('--accent', node.accent || '#3b82f6');
+
+  // NEW badge
+  if (node.isNew) {
+    const nb = document.createElement('div');
+    nb.className = 'new-badge';
+    nb.textContent = 'NEW';
+    card.appendChild(nb);
+  }
+
+  // Name
+  const name = document.createElement('div');
+  name.className = 'card-name';
+  name.textContent = node.name;
+  card.appendChild(name);
+
+  // Person
+  if (node.person) {
+    const person = document.createElement('div');
+    person.className = 'card-person';
+    person.textContent = node.person;
+    if (node.note === 'con') {
+      const cb = document.createElement('span');
+      cb.className = 'con-badge';
+      cb.textContent = '겸';
+      person.appendChild(cb);
+    }
+    if (node.note === 'ssg') {
+      const sb = document.createElement('span');
+      sb.className = 'ssg-badge';
+      sb.textContent = 'SSG';
+      person.appendChild(sb);
+    }
+    card.appendChild(person);
+  }
+
+  // Role
+  if (node.role) {
+    const role = document.createElement('div');
+    role.className = 'card-role';
+    role.textContent = node.role;
+    card.appendChild(role);
+  }
+
+  // Count
+  if (node.count !== undefined && node.count > 0) {
+    const cnt = document.createElement('div');
+    cnt.className = 'card-count';
+    cnt.innerHTML = `<span>${node.count}</span>명`;
+    card.appendChild(cnt);
+  }
+
+  // Members (leaf node)
+  if (node.members && !node.children) {
+    const pl = document.createElement('div');
+    pl.className = 'people-list';
+    node.members.slice(0, 5).forEach(m => {
+      const chip = document.createElement('span');
+      chip.className = 'person-chip';
+      chip.textContent = m;
+      pl.appendChild(chip);
+    });
+    if (node.members.length > 5) {
+      const more = document.createElement('span');
+      more.className = 'person-chip';
+      more.textContent = `+${node.members.length - 5}`;
+      more.style.background = 'rgba(255,255,255,0.08)';
+      pl.appendChild(more);
+    }
+    card.appendChild(pl);
+  }
+
+  // Expand icon (if has children)
+  if (node.children && node.children.length > 0) {
+    const icon = document.createElement('div');
+    icon.className = 'expand-icon';
+    icon.textContent = node.expanded ? '−' : '+';
+    card.appendChild(icon);
+  }
+
+  wrap.appendChild(card);
+
+  // Tooltip for member details
+  if (node.members) {
+    card.addEventListener('mouseenter', (e) => showTooltip(e, node));
+    card.addEventListener('mousemove', moveTooltip);
+    card.addEventListener('mouseleave', hideTooltip);
+  }
+
+  return wrap;
+}
+
+function buildTree(node, depth = 0) {
+  const treeNode = document.createElement('div');
+  treeNode.className = 'tree-node';
+  if (node.children && node.children.length > 0) {
+    treeNode.classList.add('has-children');
+    if (!node.expanded) treeNode.classList.add('collapsed');
+  }
+
+  const cardWrap = createCard(node);
+  treeNode.appendChild(cardWrap);
+
+  if (node.children && node.children.length > 0) {
+    const childrenContainer = document.createElement('div');
+    childrenContainer.className = 'tree-children';
+    if (!node.expanded) childrenContainer.classList.add('hidden');
+
+    // Calculate horizontal line width after render
+    node.children.forEach((child, i) => {
+      const item = document.createElement('div');
+      item.className = 'tree-item';
+      item.appendChild(buildTree(child, depth + 1));
+      childrenContainer.appendChild(item);
+    });
+
+    treeNode.appendChild(childrenContainer);
+
+    // Click to toggle
+    const card = cardWrap.querySelector('.node-card');
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isCollapsed = treeNode.classList.contains('collapsed');
+      treeNode.classList.toggle('collapsed', !isCollapsed);
+      childrenContainer.classList.toggle('hidden', !isCollapsed);
+      const icon = card.querySelector('.expand-icon');
+      if (icon) icon.textContent = isCollapsed ? '−' : '+';
+    });
+  }
+
+  return treeNode;
+}
+
+// Draw horizontal connector lines using ResizeObserver after layout
+function drawConnectors() {
+  document.querySelectorAll('.tree-children').forEach(container => {
+    const items = container.querySelectorAll(':scope > .tree-item');
+    if (items.length <= 1) {
+      container.style.setProperty('--line-left', '50%');
+      container.style.setProperty('--line-width', '0px');
+      return;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const firstCard = items[0].querySelector('.node-card');
+    const lastCard  = items[items.length - 1].querySelector('.node-card');
+    if (!firstCard || !lastCard) return;
+    const fr = firstCard.getBoundingClientRect();
+    const lr = lastCard.getBoundingClientRect();
+    const left  = fr.left + fr.width / 2 - containerRect.left;
+    const right = lr.left + lr.width / 2 - containerRect.left;
+    container.style.setProperty('--line-left', left + 'px');
+    container.style.setProperty('--line-width', (right - left) + 'px');
+  });
+}
+
+// Apply connector positions via CSS custom properties
+const connectorStyle = document.createElement('style');
+connectorStyle.textContent = `
+  .tree-children::before {
+    left: var(--line-left, 10%);
+    width: var(--line-width, 80%);
+  }
+`;
+document.head.appendChild(connectorStyle);
+
+// ───────────────────────────────────────────────────────
+//  TOOLTIP
+// ───────────────────────────────────────────────────────
+const tooltip = document.getElementById('tooltip');
+function showTooltip(e, node) {
+  let html = `<div class="tooltip-name">${node.name}</div>`;
+  if (node.members && node.members.length) {
+    html += `<div class="tooltip-members">`;
+    node.members.forEach(m => {
+      html += `<div class="tooltip-member">· ${m}</div>`;
+    });
+    html += `</div>`;
+  }
+  tooltip.innerHTML = html;
+  tooltip.classList.add('visible');
+  moveTooltip(e);
+}
+function moveTooltip(e) {
+  tooltip.style.left = (e.clientX + 14) + 'px';
+  tooltip.style.top  = (e.clientY + 14) + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+// ───────────────────────────────────────────────────────
+//  INIT
+// ───────────────────────────────────────────────────────
+const chart = document.getElementById('chart');
+chart.appendChild(buildTree(org));
+
+// Draw connectors after layout
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    drawConnectors();
+  });
+});
+
+// Redraw on resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(drawConnectors, 100);
+});
+
+// Also redraw after any click (expand/collapse)
+document.addEventListener('click', () => {
+  setTimeout(drawConnectors, 250);
+});
+
+// ─── 전체 펼치기 / 접기 ───
+function expandAll() {
+  document.querySelectorAll('.tree-node.has-children').forEach(node => {
+    node.classList.remove('collapsed');
+    const children = node.querySelector(':scope > .tree-children');
+    if (children) children.classList.remove('hidden');
+    const icon = node.querySelector(':scope > .node-card-wrap .expand-icon');
+    if (icon) icon.textContent = '−';
+  });
+  setTimeout(drawConnectors, 250);
+}
+
+function collapseAll() {
+  document.querySelectorAll('.tree-node.has-children').forEach(node => {
+    // 루트 노드(SentBe)는 접지 않음
+    if (node.closest('#chart') === node) return;
+    node.classList.add('collapsed');
+    const children = node.querySelector(':scope > .tree-children');
+    if (children) children.classList.add('hidden');
+    const icon = node.querySelector(':scope > .node-card-wrap .expand-icon');
+    if (icon) icon.textContent = '+';
+  });
+  setTimeout(drawConnectors, 250);
+}
+</script>
+</body>
+</html>
