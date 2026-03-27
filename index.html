@@ -506,6 +506,53 @@
   }
   header .toggle-btn:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.28); }
 
+  /* ─── ZOOM CONTROLS ─── */
+  .zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 4px 8px;
+  }
+  .zoom-btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--dark-text-muted);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s;
+    font-family: inherit;
+    line-height: 1;
+  }
+  .zoom-btn:hover { background: var(--color-sb500); border-color: var(--color-sb500); color: var(--color-g0); }
+  .zoom-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-g400);
+    min-width: 38px;
+    text-align: center;
+  }
+  .zoom-reset {
+    background: none;
+    border: none;
+    color: var(--color-g450);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.18s;
+  }
+  .zoom-reset:hover { color: var(--color-sb300); }
+
   /* ─── GROUP LEGEND ─── */
   .legend {
     background: var(--dark-bg-base);
@@ -524,15 +571,18 @@
   /* ─── CHART WRAPPER ─── */
   .chart-wrapper {
     padding: 40px 60px 80px;
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: auto;
     min-height: calc(100vh - 100px);
+    cursor: grab;
   }
+  .chart-wrapper:active { cursor: grabbing; }
   .chart-inner {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     min-width: 100%;
+    transform-origin: top center;
+    transition: transform 0.15s ease;
   }
 
   /* ─── TREE NODES ─── */
@@ -800,6 +850,12 @@
     <div class="toggle-btns">
       <button class="toggle-btn" id="btnExpandAll" onclick="expandAll()">전체 펼치기</button>
       <button class="toggle-btn" id="btnCollapseAll" onclick="collapseAll()">전체 접기</button>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoomOut()">−</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="zoom-btn" onclick="zoomIn()">+</button>
+      <button class="zoom-reset" onclick="zoomReset()">초기화</button>
     </div>
   </div>
 </header>
@@ -1504,6 +1560,52 @@ function collapseAll() {
   });
   setTimeout(drawConnectors, 250);
 }
+
+// ─── ZOOM ───────────────────────────────────────────────
+let currentZoom = 1;
+const ZOOM_STEP = 0.1;
+const ZOOM_MIN  = 0.3;
+const ZOOM_MAX  = 2.0;
+
+function applyZoom() {
+  const inner = document.getElementById('chart');
+  inner.style.transform = `scale(${currentZoom})`;
+  inner.style.transformOrigin = 'top center';
+  document.getElementById('zoomLabel').textContent = Math.round(currentZoom * 100) + '%';
+}
+
+function zoomIn() {
+  currentZoom = Math.min(ZOOM_MAX, Math.round((currentZoom + ZOOM_STEP) * 10) / 10);
+  applyZoom();
+}
+
+function zoomOut() {
+  currentZoom = Math.max(ZOOM_MIN, Math.round((currentZoom - ZOOM_STEP) * 10) / 10);
+  applyZoom();
+}
+
+function zoomReset() {
+  currentZoom = 1;
+  applyZoom();
+}
+
+// 마우스 휠 줌
+document.querySelector('.chart-wrapper').addEventListener('wheel', function(e) {
+  if (e.ctrlKey || e.metaKey) {
+    e.preventDefault();
+    if (e.deltaY < 0) zoomIn();
+    else zoomOut();
+  }
+}, { passive: false });
+
+// 키보드 단축키: Ctrl/Cmd + +/-/0
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === '=' || e.key === '+') { e.preventDefault(); zoomIn(); }
+    else if (e.key === '-') { e.preventDefault(); zoomOut(); }
+    else if (e.key === '0') { e.preventDefault(); zoomReset(); }
+  }
+});
 </script>
 </body>
 </html>
