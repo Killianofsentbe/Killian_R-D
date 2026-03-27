@@ -553,6 +553,58 @@
   }
   .zoom-reset:hover { color: var(--color-sb300); }
 
+  /* ─── SEARCH ─── */
+  .search-wrap {
+    position: relative;
+    margin-left: 12px;
+  }
+  .search-input {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--color-g0);
+    padding: 7px 36px 7px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    width: 200px;
+    outline: none;
+    transition: all 0.18s;
+  }
+  .search-input::placeholder { color: var(--color-g450); }
+  .search-input:focus { border-color: var(--color-sb500); background: rgba(49,118,253,0.08); width: 240px; }
+  .search-clear {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: var(--color-g450);
+    font-size: 14px; cursor: pointer;
+    display: none;
+    line-height: 1;
+  }
+  .search-clear:hover { color: var(--color-g0); }
+  .search-count {
+    position: absolute;
+    top: calc(100% + 6px); right: 0;
+    font-size: 11px; color: var(--color-g450);
+    white-space: nowrap;
+    display: none;
+  }
+
+  /* 검색 하이라이트 */
+  .node-card.search-match {
+    border-color: var(--color-sb500) !important;
+    box-shadow: 0 0 0 2px rgba(49,118,253,0.4), 0 8px 24px rgba(0,0,0,0.4) !important;
+  }
+  .node-card.search-match .card-name,
+  .node-card.search-match .card-person { color: var(--color-g0) !important; }
+  .node-card.search-dim { opacity: 0.2; }
+  .person-chip.search-match-chip {
+    background: rgba(49,118,253,0.25);
+    color: var(--color-sb300);
+    font-weight: 700;
+  }
+
   /* ─── GROUP LEGEND ─── */
   .legend {
     background: var(--dark-bg-base);
@@ -850,6 +902,11 @@
     <div class="toggle-btns">
       <button class="toggle-btn" id="btnExpandAll" onclick="expandAll()">전체 펼치기</button>
       <button class="toggle-btn" id="btnCollapseAll" onclick="collapseAll()">전체 접기</button>
+    </div>
+    <div class="search-wrap">
+      <input class="search-input" id="searchInput" type="text" placeholder="이름 / 닉네임 검색..." oninput="onSearch(this.value)" onkeydown="if(event.key==='Escape')clearSearch()">
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      <span class="search-count" id="searchCount"></span>
     </div>
     <div class="zoom-controls">
       <button class="zoom-btn" onclick="zoomOut()">−</button>
@@ -1559,6 +1616,80 @@ function collapseAll() {
     if (icon) icon.textContent = '+';
   });
   setTimeout(drawConnectors, 250);
+}
+
+// ─── SEARCH ─────────────────────────────────────────────
+function onSearch(query) {
+  const q = query.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClear');
+  const countEl = document.getElementById('searchCount');
+
+  clearBtn.style.display = q ? 'block' : 'none';
+
+  if (!q) {
+    clearSearch();
+    return;
+  }
+
+  const allCards = document.querySelectorAll('.node-card');
+  let matchCount = 0;
+
+  allCards.forEach(card => {
+    const wrap = card.closest('.tree-node');
+    const nameEl = card.querySelector('.card-name');
+    const personEl = card.querySelector('.card-person');
+    const chips = card.querySelectorAll('.person-chip');
+
+    const nameText   = nameEl   ? nameEl.textContent.toLowerCase()   : '';
+    const personText = personEl ? personEl.textContent.toLowerCase() : '';
+
+    // person-chip 개별 매칭
+    let chipMatch = false;
+    chips.forEach(chip => {
+      const matched = chip.textContent.toLowerCase().includes(q);
+      chip.classList.toggle('search-match-chip', matched);
+      if (matched) chipMatch = true;
+    });
+
+    const isMatch = nameText.includes(q) || personText.includes(q) || chipMatch;
+
+    card.classList.toggle('search-match', isMatch);
+    card.classList.toggle('search-dim', !isMatch);
+
+    if (isMatch) {
+      matchCount++;
+      // 부모 노드 자동 펼치기
+      let parent = wrap ? wrap.parentElement : null;
+      while (parent) {
+        const parentNode = parent.closest('.tree-node.has-children');
+        if (!parentNode) break;
+        parentNode.classList.remove('collapsed');
+        const children = parentNode.querySelector(':scope > .tree-children');
+        if (children) children.classList.remove('hidden');
+        const icon = parentNode.querySelector(':scope > .node-card-wrap .expand-icon');
+        if (icon) icon.textContent = '−';
+        parent = parentNode.parentElement;
+      }
+    }
+  });
+
+  countEl.style.display = 'block';
+  countEl.textContent = matchCount > 0 ? `${matchCount}명 검색됨` : '검색 결과 없음';
+  countEl.style.color = matchCount > 0 ? 'var(--color-sb300)' : 'var(--color-r500)';
+
+  setTimeout(drawConnectors, 100);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').style.display = 'none';
+  document.getElementById('searchCount').style.display = 'none';
+  document.querySelectorAll('.node-card').forEach(card => {
+    card.classList.remove('search-match', 'search-dim');
+  });
+  document.querySelectorAll('.person-chip').forEach(chip => {
+    chip.classList.remove('search-match-chip');
+  });
 }
 
 // ─── ZOOM ───────────────────────────────────────────────
