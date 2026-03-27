@@ -5,18 +5,458 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SentBe 전사 조직도 | 2026.03</title>
 <style>
+  /* ── Web Fonts ─────────────────────────────────────────────── */
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+  @import url('https://cdn.jsdelivr.net/npm/gmarket-sans@1.0.4/fonts/GmarketSans.css');
+
+  /* ============================================================
+     CSS Custom Properties (Design Tokens)
+     ============================================================ */
+  :root {
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — GrayScale
+       ────────────────────────────────────────────────────────── */
+    --color-g0:    #FFFFFF;   /* White */
+    --color-g50:   #FBFCFE;
+    --color-g100:  #F7F8FB;
+    --color-g150:  #F0F2F7;
+    --color-g200:  #E9ECF1;
+    --color-g250:  #E3E6EB;
+    --color-g300:  #D8DADF;
+    --color-g350:  #C7C9CD;
+    --color-g400:  #9D9FA1;
+    --color-g450:  #797B7D;
+    --color-g500:  #525357;
+    --color-g600:  #424246;
+    --color-g700:  #37373D;
+    --color-g750:  #303035;
+    --color-g800:  #2A2A2E;
+    --color-g900:  #1A1A1A;
+    --color-g1000: #000000;   /* Black */
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — SentBe Blue
+       ────────────────────────────────────────────────────────── */
+    --color-sb50:  #FAFBFD;
+    --color-sb100: #F4F7FD;
+    --color-sb150: #EBF2FE;
+    --color-sb200: #D9E6FC;
+    --color-sb250: #BCD5FF;
+    --color-sb300: #92B6FE;
+    --color-sb400: #6196FD;
+    --color-sb500: #3176FD;
+    --color-sb550: #1462FC;   /* Brand Primary */
+    --color-sb600: #0156FC;
+    --color-sb700: #0746CA;
+    --color-sb800: #0C3698;
+    --color-sb900: #122666;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Green
+       ────────────────────────────────────────────────────────── */
+    --color-gr100: #F8FDFB;
+    --color-gr150: #EEF8F3;
+    --color-gr200: #D9F2E6;
+    --color-gr300: #B7E0D2;
+    --color-gr400: #85D4BC;
+    --color-gr500: #3DBE9D;
+    --color-gr600: #079F78;
+    --color-gr700: #0C7E61;
+    --color-gr800: #065239;
+    --color-gr900: #063D2B;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Red
+       ────────────────────────────────────────────────────────── */
+    --color-r100: #FBF9F9;
+    --color-r150: #FBF1F1;
+    --color-r200: #FCE4E4;
+    --color-r300: #FDBDBD;
+    --color-r400: #F88C8C;
+    --color-r500: #F86464;
+    --color-r600: #F91C1C;
+    --color-r700: #D90B0B;
+    --color-r800: #AB1111;
+    --color-r900: #850101;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Orange
+       ────────────────────────────────────────────────────────── */
+    --color-o100: #FFFAF8;
+    --color-o150: #FFF2EB;
+    --color-o200: #F6E3D9;
+    --color-o300: #FAC5B0;
+    --color-o400: #F4A17D;
+    --color-o500: #EF713A;
+    --color-o600: #E24F0E;
+    --color-o700: #C23F06;
+    --color-o800: #9D3405;
+    --color-o900: #852407;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Turquoise
+       ────────────────────────────────────────────────────────── */
+    --color-t100: #F2F9FA;
+    --color-t150: #E9F5F6;
+    --color-t200: #D9F0F3;
+    --color-t300: #AFE8F0;
+    --color-t400: #7ED9E5;
+    --color-t500: #33BFD2;
+    --color-t600: #079BAF;
+    --color-t700: #0D8196;
+    --color-t800: #10606F;
+    --color-t900: #003C44;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Violet
+       ────────────────────────────────────────────────────────── */
+    --color-v100: #F6F3FB;
+    --color-v150: #EDE7FB;
+    --color-v200: #E1D7F8;
+    --color-v300: #D0BAFF;
+    --color-v400: #B798FA;
+    --color-v500: #A379FF;
+    --color-v600: #915FFF;
+    --color-v700: #6D2EF6;
+    --color-v800: #4F18C6;
+    --color-v900: #330B70;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Yellow
+       ────────────────────────────────────────────────────────── */
+    --color-y100: #FFFEF1;
+    --color-y150: #FEFBE2;
+    --color-y200: #FAF0BD;
+    --color-y300: #FAE475;
+    --color-y400: #F3D015;
+    --color-y500: #E2B514;
+    --color-y600: #B8890F;
+    --color-y700: #936C0A;
+    --color-y800: #634802;
+    --color-y900: #433205;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Magenta
+       ────────────────────────────────────────────────────────── */
+    --color-m100: #FCF2F9;
+    --color-m150: #FFEBF9;
+    --color-m200: #FFDEF5;
+    --color-m300: #FFC7EF;
+    --color-m400: #FFA8E6;
+    --color-m500: #FF85DB;
+    --color-m600: #F562CA;
+    --color-m700: #E03FB1;
+    --color-m800: #C72297;
+    --color-m900: #A8167E;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Pink
+       ────────────────────────────────────────────────────────── */
+    --color-pk100: #FFF5F8;
+    --color-pk150: #FFE8EF;
+    --color-pk200: #FFD6E2;
+    --color-pk300: #FFB7CC;
+    --color-pk400: #FE8AAC;
+    --color-pk500: #F55886;
+    --color-pk600: #E03668;
+    --color-pk700: #C72C59;
+    --color-pk800: #A81E47;
+    --color-pk900: #850D30;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Light Orange
+       ────────────────────────────────────────────────────────── */
+    --color-lo100: #FCF6ED;
+    --color-lo150: #FDF0E0;
+    --color-lo200: #FFD59D;
+    --color-lo300: #FFC476;
+    --color-lo400: #FAAC46;
+    --color-lo500: #EF9621;
+    --color-lo600: #E1850D;
+    --color-lo700: #C27004;
+    --color-lo800: #A35C00;
+    --color-lo900: #8A4F02;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Olive
+       ────────────────────────────────────────────────────────── */
+    --color-ov100: #FAF9EB;
+    --color-ov150: #F5F1CE;
+    --color-ov200: #E2DC8D;
+    --color-ov300: #CBC359;
+    --color-ov400: #ACA541;
+    --color-ov500: #938D2C;
+    --color-ov600: #80791C;
+    --color-ov700: #6B650F;
+    --color-ov800: #56520F;
+    --color-ov900: #423F0B;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Lime
+       ────────────────────────────────────────────────────────── */
+    --color-l100: #FAFFF2;
+    --color-l150: #F1FAE1;
+    --color-l200: #E0F5BA;
+    --color-l300: #CDEF90;
+    --color-l400: #B6E168;
+    --color-l500: #9AD62F;
+    --color-l600: #80C10C;
+    --color-l700: #649906;
+    --color-l800: #4B7500;
+    --color-l900: #345200;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Deep Green
+       ────────────────────────────────────────────────────────── */
+    --color-dg100: #F6F9F4;
+    --color-dg150: #EBFBE6;
+    --color-dg200: #D2EFC9;
+    --color-dg300: #B4E0A7;
+    --color-dg400: #7AC663;
+    --color-dg500: #4B9934;
+    --color-dg600: #2E7618;
+    --color-dg700: #286117;
+    --color-dg800: #1F5110;
+    --color-dg900: #19470B;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Light Blue
+       ────────────────────────────────────────────────────────── */
+    --color-lb100: #F0F8FF;
+    --color-lb150: #DEF0FF;
+    --color-lb200: #C7E6FF;
+    --color-lb300: #A3D6FF;
+    --color-lb400: #73BFFA;
+    --color-lb500: #3EA1F0;
+    --color-lb600: #208EE5;
+    --color-lb700: #0D74C7;
+    --color-lb800: #095C9E;
+    --color-lb900: #044376;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Royal Blue
+       ────────────────────────────────────────────────────────── */
+    --color-rb100: #F0F2FF;
+    --color-rb150: #E5E9FF;
+    --color-rb200: #D1D8FF;
+    --color-rb300: #B2BEFF;
+    --color-rb400: #8A9CFF;
+    --color-rb500: #5C71E5;
+    --color-rb600: #4254B8;
+    --color-rb700: #2C3C94;
+    --color-rb800: #1A2876;
+    --color-rb900: #111C57;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Marlin
+       ────────────────────────────────────────────────────────── */
+    --color-ml100: #F7FAFF;
+    --color-ml150: #EFF4FF;
+    --color-ml200: #D2DBEF;
+    --color-ml300: #B0BEDB;
+    --color-ml400: #8999BE;
+    --color-ml500: #68789E;
+    --color-ml600: #536185;
+    --color-ml700: #3E4B6B;
+    --color-ml800: #2B3652;
+    --color-ml900: #1F283E;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Purple
+       ────────────────────────────────────────────────────────── */
+    --color-p100: #F7E7FA;
+    --color-p150: #F2D8F6;
+    --color-p200: #F3B9FB;
+    --color-p300: #E88DF4;
+    --color-p400: #D55FE5;
+    --color-p500: #BB3DCC;
+    --color-p600: #9928A8;
+    --color-p700: #780D86;
+    --color-p800: #5A0665;
+    --color-p900: #45064D;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Red Violet
+       ────────────────────────────────────────────────────────── */
+    --color-rv100: #FFF4FB;
+    --color-rv150: #FFE6F6;
+    --color-rv200: #FFD7F1;
+    --color-rv300: #FFBDE8;
+    --color-rv400: #F090CE;
+    --color-rv500: #DB65B1;
+    --color-rv600: #B8468F;
+    --color-rv700: #992A71;
+    --color-rv800: #801257;
+    --color-rv900: #6C0B48;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Primitive — Brown
+       ────────────────────────────────────────────────────────── */
+    --color-b100: #FAF3F0;
+    --color-b150: #F5EAE6;
+    --color-b200: #EBDCD5;
+    --color-b300: #DBC9C1;
+    --color-b400: #BDA79F;
+    --color-b500: #988076;
+    --color-b600: #7A6258;
+    --color-b700: #5C443B;
+    --color-b800: #422D25;
+    --color-b900: #331F17;
+
+    /* ──────────────────────────────────────────────────────────
+       COLORS › Semantic
+       ────────────────────────────────────────────────────────── */
+
+    /* Brand */
+    --color-primary:          #1462FC;  /* SB550 */
+    --color-on-primary:       #FFFFFF;
+    --color-secondary:        #F4F7FD;  /* SB100 */
+    --color-on-secondary:     #0156FC;  /* SB600 */
+    --color-tertiary:         #F7F8FB;  /* G100 */
+    --color-on-tertiary:      #525357;  /* G500 */
+
+    /* Status */
+    --color-positive:         #F8FDFB;  /* GR100 — background */
+    --color-on-positive:      #3DBE9D;  /* GR500 — foreground */
+    --color-negative:         #FBF9F9;  /* R100  — background */
+    --color-on-negative:      #F86464;  /* R500  — foreground */
+    --color-warning:          #FFFAF8;  /* O100  — background */
+    --color-on-warning:       #EF713A;  /* O500  — foreground */
+
+    /* Surface (Aphrodite) */
+    --color-surface-depth-a:  #FFFFFF;
+    --color-surface-depth-b:  #F7F8FB;
+    --color-surface-toast:    rgba(0, 0, 0, 0.698);
+    --color-background:       #FFFFFF;
+
+    /* ──────────────────────────────────────────────────────────
+       TYPOGRAPHY › Font Families
+       ────────────────────────────────────────────────────────── */
+    --font-pretendard: 'Pretendard Variable', 'Pretendard', -apple-system,
+                        BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-gmarket:    'Gmarket Sans', sans-serif;
+
+    /* ──────────────────────────────────────────────────────────
+       TYPOGRAPHY › Font Weights
+       ────────────────────────────────────────────────────────── */
+    --fw-regular:    400;
+    --fw-medium:     500;
+    --fw-semibold:   600;
+    --fw-bold:       700;
+    --fw-extrabold:  800;
+
+    /* ──────────────────────────────────────────────────────────
+       TYPOGRAPHY › Font Sizes
+       ────────────────────────────────────────────────────────── */
+    --fs-10: 0.625rem;
+    --fs-11: 0.6875rem;
+    --fs-12: 0.75rem;
+    --fs-13: 0.8125rem;
+    --fs-14: 0.875rem;
+    --fs-15: 0.9375rem;
+    --fs-16: 1rem;
+    --fs-18: 1.125rem;
+    --fs-19: 1.1875rem;
+    --fs-20: 1.25rem;
+    --fs-24: 1.5rem;
+    --fs-25: 1.5625rem;
+    --fs-26: 1.625rem;
+    --fs-32: 2rem;
+    --fs-40: 2.5rem;
+    --fs-48: 3rem;
+
+    /* ──────────────────────────────────────────────────────────
+       TYPOGRAPHY › Line Heights
+       ────────────────────────────────────────────────────────── */
+    --lh-tight:  1.2;
+    --lh-normal: 1.5;
+
+    /* ──────────────────────────────────────────────────────────
+       TYPOGRAPHY › Letter Spacings
+       ────────────────────────────────────────────────────────── */
+    --ls-tight:  -0.015em;
+    --ls-normal:  0.001em;
+
+    /* ──────────────────────────────────────────────────────────
+       SPACING
+       ────────────────────────────────────────────────────────── */
+    --spacing-0:   0px;
+    --spacing-50:  4px;
+    --spacing-100: 8px;
+    --spacing-150: 12px;
+    --spacing-200: 16px;
+    --spacing-250: 20px;
+    --spacing-300: 24px;
+
+    /* ──────────────────────────────────────────────────────────
+       SHAPE › Border Radius
+       ────────────────────────────────────────────────────────── */
+    --radius-100:    8px;
+    --radius-150:    12px;
+    --radius-300:    24px;
+    --radius-circle: 9999px;
+
+    /* ──────────────────────────────────────────────────────────
+       EFFECTS › Shadows
+       ────────────────────────────────────────────────────────── */
+    --shadow-white-50:  0px 2px  8px 0px rgba(0,   0,   0,   0.04);
+    --shadow-white-100: 0px 2px 12px 0px rgba(0,   0,   0,   0.06);
+    --shadow-white-200: 0px 4px 16px 0px rgba(0,   0,   0,   0.12);
+    --shadow-white-250: 0px 6px 20px 0px rgba(0,   0,   0,   0.10);
+    --shadow-white-300: 0px 8px 24px 0px rgba(0,   0,   0,   0.14);
+    --shadow-black-200: 0px 4px 16px 0px rgba(0,   0,   0,   0.30);
+    --shadow-black-300: 0px 8px 24px 0px rgba(0,   0,   0,   0.40);
+    --shadow-sb-200:    0px 4px 16px 0px rgba(20, 98, 252, 0.20);
+    --shadow-sb-300:    0px 8px 24px 0px rgba(20, 98, 252, 0.30);
+    --shadow-ap-card:   0px 8px 32px 4px rgba(0,   0,   0,   0.06);
+    --shadow-popup:     0px 8px 32px 0px rgba(0,   0,   0,   0.12);
+    --shadow-tooltip:   0px 2px  8px 0px rgba(0,   0,   0,   0.12);
+    --shadow-tooltip-b: 0px 4px 12px 0px rgba(0,   0,   0,   0.16);
+    --blur-ap-layer:        blur(20px);
+    --blur-ap-screen-dimed: blur(8px);
+
+    /* ──────────────────────────────────────────────────────────
+       LAYOUT › Grid Breakpoints
+       ────────────────────────────────────────────────────────── */
+    --breakpoint-mobile:  375px;
+    --breakpoint-tablet:  768px;
+    --breakpoint-desktop: 1280px;
+    --grid-margin-mobile:  20px;
+    --grid-margin-tablet:  24px;
+    --grid-margin-desktop: 20px;
+    --grid-cols-mobile-2:  2;
+    --grid-cols-mobile-3:  3;
+    --grid-cols-mobile-6:  6;
+    --grid-cols-tablet:    8;
+    --grid-cols-desktop:   12;
+  }
+
+  /* ─── 다크 UI용 로컬 토큰 ─── */
+  :root {
+    --dark-bg-deep:   #0f172a;  /* 최심부 배경 */
+    --dark-bg-base:   #1e293b;  /* 카드/패널 배경 */
+    --dark-bg-panel:  #334155;  /* 확장 아이콘 등 */
+    --dark-bg-hover:  #475569;  /* 호버 상태 */
+    --dark-blue-deep: #1e3a5f;  /* 헤더 그라디언트 중간 */
+    --dark-root-bg1:  #1e3a5f;  /* 루트 카드 그라디언트 시작 */
+    --dark-root-bg2:  #0f2444;  /* 루트 카드 그라디언트 끝 */
+    --dark-text-base: #f1f5f9;  /* 기본 카드 텍스트 */
+    --dark-text-muted:#e2e8f0;  /* 버튼/밝은 텍스트 */
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0f172a;
-    color: #1e293b;
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+    background: var(--dark-bg-deep);
+    color: var(--dark-bg-base);
     min-height: 100vh;
   }
 
   /* ─── HEADER ─── */
   header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%);
+    background: linear-gradient(135deg, var(--dark-bg-deep) 0%, var(--dark-blue-deep) 60%, var(--dark-bg-deep) 100%);
     border-bottom: 1px solid rgba(255,255,255,0.08);
     padding: 20px 40px;
     display: flex;
@@ -30,22 +470,22 @@
   header .logo-area { display: flex; align-items: center; gap: 14px; }
   header .logo {
     width: 38px; height: 38px;
-    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    background: linear-gradient(135deg, var(--color-sb500), var(--color-rb500));
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 900; color: white;
+    font-size: 18px; font-weight: 900; color: var(--color-g0);
   }
-  header h1 { font-size: 18px; font-weight: 700; color: white; letter-spacing: -0.3px; }
-  header .subtitle { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+  header h1 { font-size: 18px; font-weight: 700; color: var(--color-g0); letter-spacing: -0.3px; }
+  header .subtitle { font-size: 12px; color: var(--color-g400); margin-top: 2px; }
   header .stats { display: flex; gap: 20px; align-items: center; }
   header .stat-item { text-align: center; }
-  header .stat-num { font-size: 22px; font-weight: 800; color: white; line-height: 1; }
-  header .stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  header .stat-num { font-size: 22px; font-weight: 800; color: var(--color-g0); line-height: 1; }
+  header .stat-label { font-size: 11px; color: var(--color-g400); margin-top: 2px; }
   header .stat-divider { width: 1px; height: 36px; background: rgba(255,255,255,0.12); }
   header .date-badge {
-    background: rgba(59,130,246,0.15);
-    border: 1px solid rgba(59,130,246,0.3);
-    color: #93c5fd;
+    background: rgba(49,118,253,0.15);
+    border: 1px solid rgba(49,118,253,0.3);
+    color: var(--color-sb300);
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 12px;
@@ -55,7 +495,7 @@
   header .toggle-btn {
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.15);
-    color: #e2e8f0;
+    color: var(--dark-text-muted);
     padding: 6px 14px;
     border-radius: 8px;
     font-size: 12px;
@@ -68,18 +508,18 @@
 
   /* ─── GROUP LEGEND ─── */
   .legend {
-    background: #1e293b;
+    background: var(--dark-bg-base);
     padding: 10px 40px;
     display: flex;
     gap: 24px;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
-  .legend-label { font-size: 11px; color: #64748b; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .legend-label { font-size: 11px; color: var(--color-g450); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
   .legend-item { display: flex; align-items: center; gap: 7px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-  .legend-text { font-size: 12px; color: #94a3b8; }
-  .legend-count { font-size: 11px; color: #64748b; }
+  .legend-text { font-size: 12px; color: var(--color-g400); }
+  .legend-count { font-size: 11px; color: var(--color-g450); }
 
   /* ─── CHART WRAPPER ─── */
   .chart-wrapper {
@@ -140,7 +580,7 @@
   /* ─── NODE CARD ─── */
   .node-card-wrap { position: relative; }
   .node-card {
-    background: #1e293b;
+    background: var(--dark-bg-base);
     border: 1.5px solid rgba(255,255,255,0.08);
     border-radius: 14px;
     padding: 13px 18px;
@@ -166,25 +606,25 @@
     top: 0; left: 16px; right: 16px;
     height: 3px;
     border-radius: 0 0 3px 3px;
-    background: var(--accent, #3b82f6);
+    background: var(--accent, var(--color-sb500));
   }
 
   .card-name {
     font-size: 12.5px;
     font-weight: 700;
-    color: #f1f5f9;
+    color: var(--dark-text-base);
     line-height: 1.3;
     margin-top: 4px;
   }
   .card-person {
     font-size: 11px;
-    color: #94a3b8;
+    color: var(--color-g400);
     margin-top: 5px;
     line-height: 1.3;
   }
   .card-role {
     font-size: 10px;
-    color: #64748b;
+    color: var(--color-g450);
     margin-top: 1px;
   }
   .card-count {
@@ -196,15 +636,15 @@
     padding: 2px 9px;
     font-size: 10.5px;
     font-weight: 700;
-    color: #94a3b8;
+    color: var(--color-g400);
     margin-top: 8px;
   }
-  .card-count span { color: white; }
+  .card-count span { color: var(--color-g0); }
   .new-badge {
     position: absolute;
     top: -7px; right: -7px;
-    background: #ef4444;
-    color: white;
+    background: var(--color-r500);
+    color: var(--color-g0);
     font-size: 9px;
     font-weight: 800;
     padding: 2px 7px;
@@ -224,9 +664,9 @@
   }
   .ssg-badge {
     display: inline-block;
-    background: rgba(52,211,153,0.15);
-    border: 1px solid rgba(52,211,153,0.3);
-    color: #34d399;
+    background: rgba(61,190,157,0.15);
+    border: 1px solid rgba(61,190,157,0.3);
+    color: var(--color-gr500);
     font-size: 9px;
     padding: 1px 5px;
     border-radius: 4px;
@@ -239,29 +679,29 @@
     left: 50%;
     transform: translateX(-50%);
     width: 18px; height: 18px;
-    background: #334155;
+    background: var(--dark-bg-panel);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 9px;
-    color: #94a3b8;
+    color: var(--color-g400);
     border: 1.5px solid rgba(255,255,255,0.1);
     transition: all 0.2s;
     z-index: 10;
   }
-  .node-card:hover .expand-icon { background: #3b82f6; color: white; border-color: #3b82f6; }
+  .node-card:hover .expand-icon { background: var(--color-sb500); color: var(--color-g0); border-color: var(--color-sb500); }
 
   /* ─── ROOT / TOP-LEVEL CARDS ─── */
   .node-card.root {
-    background: linear-gradient(135deg, #1e3a5f, #0f2444);
-    border-color: rgba(59,130,246,0.3);
+    background: linear-gradient(135deg, var(--dark-root-bg1), var(--dark-root-bg2));
+    border-color: rgba(49,118,253,0.3);
     min-width: 180px;
     padding: 16px 22px;
   }
-  .node-card.root .card-name { font-size: 16px; color: white; }
-  .node-card.root .card-person { font-size: 13px; color: #93c5fd; }
-  .node-card.root .card-role { font-size: 11px; color: #60a5fa; }
-  .node-card.root .card-count { background: rgba(59,130,246,0.15); color: #93c5fd; }
-  .node-card.root .card-count span { color: white; }
+  .node-card.root .card-name { font-size: 16px; color: var(--color-g0); }
+  .node-card.root .card-person { font-size: 13px; color: var(--color-sb300); }
+  .node-card.root .card-role { font-size: 11px; color: var(--color-sb400); }
+  .node-card.root .card-count { background: rgba(49,118,253,0.15); color: var(--color-sb300); }
+  .node-card.root .card-count span { color: var(--color-g0); }
 
   .node-card.group-card {
     min-width: 160px;
@@ -289,25 +729,25 @@
     border-radius: 6px;
     padding: 2px 7px;
     font-size: 10px;
-    color: #94a3b8;
+    color: var(--color-g400);
     white-space: nowrap;
   }
 
   /* ─── SCROLLBAR ─── */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  ::-webkit-scrollbar-track { background: var(--dark-bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--dark-bg-panel); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--dark-bg-hover); }
 
   /* ─── TOOLTIP ─── */
   .tooltip {
     position: fixed;
-    background: #1e293b;
+    background: var(--dark-bg-base);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 10px;
     padding: 10px 14px;
     font-size: 12px;
-    color: #e2e8f0;
+    color: var(--dark-text-muted);
     pointer-events: none;
     z-index: 9999;
     display: none;
@@ -315,9 +755,9 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   }
   .tooltip.visible { display: block; }
-  .tooltip-name { font-weight: 700; font-size: 13px; color: white; }
+  .tooltip-name { font-weight: 700; font-size: 13px; color: var(--color-g0); }
   .tooltip-members { margin-top: 6px; }
-  .tooltip-member { color: #94a3b8; font-size: 11px; line-height: 1.6; }
+  .tooltip-member { color: var(--color-g400); font-size: 11px; line-height: 1.6; }
 
   /* ─── ANIMATIONS ─── */
   @keyframes fadeIn {
@@ -344,15 +784,15 @@
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-      <div class="stat-num" style="color:#60a5fa">107</div>
+      <div class="stat-num" style="color:var(--color-sb400)">107</div>
       <div class="stat-label">SentBe KR</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num" style="color:#34d399">4</div>
+      <div class="stat-num" style="color:var(--color-gr500)">4</div>
       <div class="stat-label">APAC</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num" style="color:#a78bfa">24</div>
+      <div class="stat-num" style="color:var(--color-v400)">24</div>
       <div class="stat-label">America</div>
     </div>
     <div class="stat-divider"></div>
@@ -366,14 +806,14 @@
 
 <div class="legend">
   <span class="legend-label">그룹</span>
-  <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div><span class="legend-text">SentBe KR</span><span class="legend-count">(107명)</span></div>
-  <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div><span class="legend-text">SentBe APAC</span><span class="legend-count">(4명)</span></div>
-  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div><span class="legend-text">SentBe America</span><span class="legend-count">(24명)</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--color-sb500)"></div><span class="legend-text">SentBe KR</span><span class="legend-count">(107명)</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--color-gr600)"></div><span class="legend-text">SentBe APAC</span><span class="legend-count">(4명)</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--color-v600)"></div><span class="legend-text">SentBe America</span><span class="legend-count">(24명)</span></div>
   <div style="margin-left:16px; width:1px; height:16px; background:rgba(255,255,255,0.1)"></div>
   <span class="legend-label">태그</span>
   <div class="legend-item"><span class="con-badge">겸</span><span class="legend-text" style="margin-left:4px">겸직</span></div>
   <div class="legend-item"><span class="ssg-badge">SSG</span><span class="legend-text" style="margin-left:4px">싱가폴 법인 급여</span></div>
-  <div class="legend-item"><span style="background:#ef4444;color:white;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;">NEW</span><span class="legend-text" style="margin-left:6px">신설 조직</span></div>
+  <div class="legend-item"><span style="background:var(--color-r500);color:var(--color-g0);font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;">NEW</span><span class="legend-text" style="margin-left:6px">신설 조직</span></div>
 </div>
 
 <div class="chart-wrapper">
@@ -824,10 +1264,10 @@ function createCard(node) {
     card.style.setProperty('--border', node.groupBorder);
   }
   if (node.highlight) {
-    card.style.border = '1.5px solid rgba(99,102,241,0.5)';
-    card.style.boxShadow = '0 0 20px rgba(99,102,241,0.15)';
+    card.style.border = '1.5px solid rgba(92,113,229,0.5)';
+    card.style.boxShadow = '0 0 20px rgba(92,113,229,0.15)';
   }
-  card.style.setProperty('--accent', node.accent || '#3b82f6');
+  card.style.setProperty('--accent', node.accent || 'var(--color-sb500)');
 
   // NEW badge
   if (node.isNew) {
