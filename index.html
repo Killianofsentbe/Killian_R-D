@@ -1622,74 +1622,94 @@ function collapseAll() {
 function onSearch(query) {
   const q = query.trim().toLowerCase();
   const clearBtn = document.getElementById('searchClear');
-  const countEl = document.getElementById('searchCount');
+  const countEl  = document.getElementById('searchCount');
 
   clearBtn.style.display = q ? 'block' : 'none';
 
-  if (!q) {
-    clearSearch();
-    return;
-  }
+  if (!q) { clearSearch(); return; }
+
+  // 1) 모든 노드 접기 (루트 제외)
+  document.querySelectorAll('.tree-node.has-children').forEach(node => {
+    if (!node.closest('#chart') || node === document.querySelector('#chart > .tree-node')) return;
+    node.classList.add('collapsed');
+    const ch = node.querySelector(':scope > .tree-children');
+    if (ch) ch.classList.add('hidden');
+    const icon = node.querySelector(':scope > .node-card-wrap .expand-icon');
+    if (icon) icon.textContent = '+';
+  });
+
+  // 2) 모든 카드 dim 처리, chip 초기화
+  document.querySelectorAll('.node-card').forEach(c => {
+    c.classList.remove('search-match');
+    c.classList.add('search-dim');
+  });
+  document.querySelectorAll('.person-chip').forEach(c => c.classList.remove('search-match-chip'));
 
   const allCards = document.querySelectorAll('.node-card');
   let matchCount = 0;
 
   allCards.forEach(card => {
-    const wrap = card.closest('.tree-node');
-    const nameEl = card.querySelector('.card-name');
-    const personEl = card.querySelector('.card-person');
-    const chips = card.querySelectorAll('.person-chip');
+    const treeNode  = card.closest('.tree-node');
+    const nameText  = (card.querySelector('.card-name')   || {}).textContent || '';
+    const personText= (card.querySelector('.card-person') || {}).textContent || '';
+    const chips     = card.querySelectorAll('.person-chip');
 
-    const nameText   = nameEl   ? nameEl.textContent.toLowerCase()   : '';
-    const personText = personEl ? personEl.textContent.toLowerCase() : '';
-
-    // person-chip 개별 매칭
     let chipMatch = false;
     chips.forEach(chip => {
-      const matched = chip.textContent.toLowerCase().includes(q);
-      chip.classList.toggle('search-match-chip', matched);
-      if (matched) chipMatch = true;
+      const m = chip.textContent.toLowerCase().includes(q);
+      if (m) { chip.classList.add('search-match-chip'); chipMatch = true; }
     });
 
-    const isMatch = nameText.includes(q) || personText.includes(q) || chipMatch;
+    const isMatch = nameText.toLowerCase().includes(q)
+                 || personText.toLowerCase().includes(q)
+                 || chipMatch;
 
-    card.classList.toggle('search-match', isMatch);
-    card.classList.toggle('search-dim', !isMatch);
+    if (!isMatch) return;
 
-    if (isMatch) {
-      matchCount++;
-      // 부모 노드 자동 펼치기
-      let parent = wrap ? wrap.parentElement : null;
-      while (parent) {
-        const parentNode = parent.closest('.tree-node.has-children');
-        if (!parentNode) break;
-        parentNode.classList.remove('collapsed');
-        const children = parentNode.querySelector(':scope > .tree-children');
-        if (children) children.classList.remove('hidden');
-        const icon = parentNode.querySelector(':scope > .node-card-wrap .expand-icon');
-        if (icon) icon.textContent = '−';
-        parent = parentNode.parentElement;
+    matchCount++;
+    card.classList.add('search-match');
+    card.classList.remove('search-dim');
+
+    // 3) 매칭 카드까지의 경로(조상) 펼치기 + dim 해제
+    let el = treeNode ? treeNode.parentElement : null;
+    while (el) {
+      const ancestor = el.closest('.tree-node');
+      if (!ancestor) break;
+
+      // 조상 카드 dim 해제
+      const ancestorCard = ancestor.querySelector(':scope > .node-card-wrap > .node-card');
+      if (ancestorCard) {
+        ancestorCard.classList.remove('search-dim');
       }
+
+      // 조상이 has-children이면 펼치기
+      if (ancestor.classList.contains('has-children')) {
+        ancestor.classList.remove('collapsed');
+        const ch = ancestor.querySelector(':scope > .tree-children');
+        if (ch) ch.classList.remove('hidden');
+        const icon = ancestor.querySelector(':scope > .node-card-wrap .expand-icon');
+        if (icon) icon.textContent = '−';
+      }
+
+      el = ancestor.parentElement;
     }
   });
 
   countEl.style.display = 'block';
-  countEl.textContent = matchCount > 0 ? `${matchCount}명 검색됨` : '검색 결과 없음';
-  countEl.style.color = matchCount > 0 ? 'var(--color-sb300)' : 'var(--color-r500)';
+  countEl.textContent   = matchCount > 0 ? `${matchCount}명 검색됨` : '검색 결과 없음';
+  countEl.style.color   = matchCount > 0 ? 'var(--color-sb300)' : 'var(--color-r500)';
 
-  setTimeout(drawConnectors, 100);
+  setTimeout(drawConnectors, 150);
 }
 
 function clearSearch() {
-  document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').value      = '';
   document.getElementById('searchClear').style.display = 'none';
   document.getElementById('searchCount').style.display = 'none';
-  document.querySelectorAll('.node-card').forEach(card => {
-    card.classList.remove('search-match', 'search-dim');
-  });
-  document.querySelectorAll('.person-chip').forEach(chip => {
-    chip.classList.remove('search-match-chip');
-  });
+  document.querySelectorAll('.node-card').forEach(c =>
+    c.classList.remove('search-match', 'search-dim'));
+  document.querySelectorAll('.person-chip').forEach(c =>
+    c.classList.remove('search-match-chip'));
 }
 
 // ─── ZOOM ───────────────────────────────────────────────
